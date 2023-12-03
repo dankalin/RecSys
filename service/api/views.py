@@ -4,6 +4,8 @@ from typing import List
 from fastapi import APIRouter, FastAPI, Request
 from pydantic import BaseModel
 
+from models.UserKNNCos30 import UserKnnCos30
+from scripts.userknn import UserKnn
 from service.api.exceptions import ModelNotFoundError, UserNotFoundError
 from service.log import app_logger
 
@@ -13,6 +15,7 @@ class RecoResponse(BaseModel):
     items: List[int]
 
 
+userknn_cos_30 = UserKnnCos30()
 router = APIRouter()
 
 
@@ -62,6 +65,9 @@ async def get_reco(
     if model_name == "random":
         random_recs = random.sample(range(1000000), 10)
         reco = random_recs
+    elif model_name == "userknn_cos_30":
+        print(user_id)
+        reco = userknn_cos_30.predict(user_id)
     else:
         raise ModelNotFoundError(error_message=f"Model {model_name} not found")
 
