@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from models.UserKNNCos30 import UserKnnCos30
 from scripts.userknn import UserKnn
+from models.LightFM import LightFM
 from service.api.exceptions import ModelNotFoundError, UserNotFoundError
 from service.log import app_logger
 
@@ -16,6 +17,7 @@ class RecoResponse(BaseModel):
 
 
 userknn_cos_30 = UserKnnCos30()
+lightfm = LightFM()
 router = APIRouter()
 
 
@@ -68,6 +70,8 @@ async def get_reco(
     elif model_name == "userknn_cos_30":
         print(user_id)
         reco = userknn_cos_30.predict(user_id)
+    elif model_name == "lightfm":
+        reco = lightfm.recommend(user_id)
     else:
         raise ModelNotFoundError(error_message=f"Model {model_name} not found")
 
