@@ -7,6 +7,9 @@ from pydantic import BaseModel
 from models.UserKNNCos30 import UserKnnCos30
 from scripts.userknn import UserKnn
 from models.LightFM import LightFM
+from models.Autoencoder import AutoEncoder
+from models.DSSM import DSSM
+from models.ADDMSLIM import ADDMSLIM
 from service.api.exceptions import ModelNotFoundError, UserNotFoundError
 from service.log import app_logger
 
@@ -18,6 +21,9 @@ class RecoResponse(BaseModel):
 
 userknn_cos_30 = UserKnnCos30()
 lightfm = LightFM()
+dssm = DSSM()
+autoenc = AutoEncoder()
+addmslim = ADDMSLIM()
 router = APIRouter()
 
 
@@ -68,8 +74,13 @@ async def get_reco(
         random_recs = random.sample(range(1000000), 10)
         reco = random_recs
     elif model_name == "userknn_cos_30":
-        print(user_id)
         reco = userknn_cos_30.predict(user_id)
+    elif model_name == "dssm":
+        reco = dssm.recommend(user_id)
+    elif model_name == "addmslim":
+        reco = dssm.recommend(user_id)
+    elif model_name == "autoencoder":
+        reco = autoenc.recommend(user_id)
     elif model_name == "lightfm":
         reco = lightfm.recommend(user_id)
     else:
