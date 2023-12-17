@@ -10,6 +10,7 @@ from models.LightFM import LightFM
 from models.Autoencoder import AutoEncoder
 from models.DSSM import DSSM
 from models.ADDMSLIM import ADDMSLIM
+from models.LGBMRanker import LGBM_Ranker
 from service.api.exceptions import ModelNotFoundError, UserNotFoundError
 from service.log import app_logger
 
@@ -24,6 +25,7 @@ lightfm = LightFM()
 dssm = DSSM()
 autoenc = AutoEncoder()
 addmslim = ADDMSLIM()
+lgbm = LGBM_Ranker()
 router = APIRouter()
 
 
@@ -83,6 +85,8 @@ async def get_reco(
         reco = autoenc.recommend(user_id)
     elif model_name == "lightfm":
         reco = lightfm.recommend(user_id)
+    elif model_name == "lgbm":
+        reco = lgbm.recommend(user_id)
     else:
         raise ModelNotFoundError(error_message=f"Model {model_name} not found")
 
